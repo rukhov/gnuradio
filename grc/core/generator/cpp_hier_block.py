@@ -36,23 +36,8 @@ class CppHierBlockGenerator(CppTopBlockGenerator):
         """generate output and write it to files"""
         CppTopBlockGenerator.write(self)
 
-        data = yaml.dump(self._build_block_n_from_flow_graph_io())
-
-        replace = [
-            ('parameters:', '\nparameters:'),
-            ('inputs:', '\ninputs:'),
-            ('outputs:', '\noutputs:'),
-            ('asserts:', '\nasserts:'),
-            ('\ntemplates:', '\n\ntemplates:'),
-            ('cpp_templates:', '\ncpp_templates:'),
-            ('documentation:', '\ndocumentation:'),
-            ('file_format:', '\nfile_format:'),
-        ]
-        for r in replace:
-            data = data.replace(*r)
-
         with codecs.open(self.file_path_yml, 'w', encoding='utf-8') as fp:
-            fp.write(data)
+            yaml.dump(self._build_block_n_from_flow_graph_io(), fp)
 
         # Windows only supports S_IREAD and S_IWRITE, other flags are ignored
         os.chmod(self.file_path_yml, self._mode)

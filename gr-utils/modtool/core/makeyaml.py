@@ -13,14 +13,10 @@ import os
 import re
 import glob
 import logging
-import yaml
+from io import StringIO
+from gnuradio.grc.core.io import yaml
 
 from collections import OrderedDict
-
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except:
-    from yaml import Loader, Dumper
 
 try:
     from gnuradio.blocktool.core import Constants
@@ -34,23 +30,6 @@ from .base import ModTool, ModToolException
 
 
 logger = logging.getLogger(__name__)
-
-## setup dumper for dumping OrderedDict ##
-_MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
-
-
-def dict_representer(dumper, data):
-    """ Representer to represent special OrderedDict """
-    return dumper.represent_dict(data.items())
-
-
-def dict_constructor(loader, node):
-    """ Construct an OrderedDict for dumping """
-    return OrderedDict(loader.construct_pairs(node))
-
-
-Dumper.add_representer(OrderedDict, dict_representer)
-Loader.add_constructor(_MAPPING_TAG, dict_constructor)
 
 
 class ModToolMakeYAML(ModTool):
@@ -368,7 +347,8 @@ def yaml_generator(self, **kwargs):
 
     if kwargs['output']:
         with open(yml_file, 'w') as yml:
-            yaml.dump(data, yml, Dumper=Dumper, default_flow_style=False)
+            yaml.dump(data, yml)
     else:
-        print(yaml.dump(data, Dumper=Dumper, allow_unicode=True,
-                        default_flow_style=False, indent=4))
+        sstream = StringIO()
+        yaml.dump(data, sstream)
+        print(sstream.getvalue())

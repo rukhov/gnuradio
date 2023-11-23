@@ -374,18 +374,8 @@ class Platform(Element):
         except KeyError:
             pass
 
-        out = yaml.dump(data, indent=2)
-
-        replace = [
-            ('blocks:\n', '\nblocks:\n'),
-            ('connections:\n', '\nconnections:\n'),
-            ('metadata:\n', '\nmetadata:\n'),
-        ]
-        for r in replace:
-            out = out.replace(*r)
-
         with open(filename, 'w', encoding='utf-8') as fp:
-            fp.write(out)
+            yaml.dump(data, fp, indent=2)
 
     def get_generate_options(self):
         for param in self.block_classes['options'].parameters_data:

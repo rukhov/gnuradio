@@ -14,26 +14,17 @@ __all__ = ['dump', 'safe_load',
 
 
 class GRCYAML(YAML):
-    def __init__(self):
-        YAML.__init__(self)
+    def __init__(self, output=None):
+        YAML.__init__(self, output=output)
         self.typ = [typ]
         init_typ(self)
 
 
-def dump(data, stream=None, default_flow_style=False, indent=4, Dumper=None):
-    # TODO: custom Dumper for the modtool
-    yaml = GRCYAML()
-    yaml.default_flow_style = default_flow_style
-    yaml.indent = indent
-
-    # TODO: disallow writing to string buffer
-    if stream is None:
-        sstream = StringIO()
-        yaml.dump_all([data], sstream)
-        return sstream.getvalue()
-
-    # TODO: use context manager?
-    return yaml.dump(data, stream)
+def dump(data, stream, default_flow_style=False, indent=4):
+    with GRCYAML(output=stream) as yaml:
+        yaml.default_flow_style = default_flow_style
+        yaml.indent = indent
+        return yaml.dump(data)
 
 
 def safe_load(stream):

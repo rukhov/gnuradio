@@ -10,32 +10,9 @@
 
 
 from collections import OrderedDict
-
-import yaml
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except:
-    from yaml import Loader, Dumper
+from gnuradio.grc.core.io import yaml
 
 from .util_functions import is_number
-
-
-## setup dumper for dumping OrderedDict ##
-_mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
-
-
-def dict_representer(dumper, data):
-    """ Representer to represent special OrderedDict """
-    return dumper.represent_dict(data.items())
-
-
-def dict_constructor(loader, node):
-    """ Construct an OrderedDict for dumping """
-    return OrderedDict(loader.construct_pairs(node))
-
-
-Dumper.add_representer(OrderedDict, dict_representer)
-Loader.add_constructor(_mapping_tag, dict_constructor)
 
 
 class GRCYAMLGenerator(object):
@@ -128,4 +105,4 @@ class GRCYAMLGenerator(object):
         """ Write the YAML file """
         self.make_yaml()
         with open(filename, 'w') as f:
-            yaml.dump(self.data, f, Dumper=Dumper, default_flow_style=False)
+            yaml.dump(self.data, f)
