@@ -5,9 +5,8 @@
 #
 
 from ruamel.yaml import YAML
-from .yaml_grc import (typ, init_typ,
-                       ListFlowing, OrderedDictFlowing, MultiLineString)
-from io import StringIO
+from .yaml_grc import typ, init_typ, ListFlowing, OrderedDictFlowing
+from ruamel.yaml.scalarstring import LiteralScalarString as MultiLineString
 
 __all__ = ['dump', 'safe_load',
            'ListFlowing', 'OrderedDictFlowing', 'MultiLineString']
