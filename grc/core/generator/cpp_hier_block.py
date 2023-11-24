@@ -37,7 +37,7 @@ class CppHierBlockGenerator(CppTopBlockGenerator):
         CppTopBlockGenerator.write(self)
 
         with codecs.open(self.file_path_yml, 'w', encoding='utf-8') as fp:
-            yaml.dump(self._build_block_n_from_flow_graph_io(), fp)
+            yaml.dump(self._build_block_n_from_flow_graph_io(), fp, indent=4)
 
         # Windows only supports S_IREAD and S_IWRITE, other flags are ignored
         os.chmod(self.file_path_yml, self._mode)

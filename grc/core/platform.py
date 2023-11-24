@@ -375,7 +375,7 @@ class Platform(Element):
             pass
 
         with open(filename, 'w', encoding='utf-8') as fp:
-            yaml.dump(data, fp, indent=2)
+            yaml.dump(data, fp)
 
     def get_generate_options(self):
         for param in self.block_classes['options'].parameters_data:

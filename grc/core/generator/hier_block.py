@@ -33,7 +33,7 @@ class HierBlockGenerator(TopBlockGenerator):
         """generate output and write it to files"""
         TopBlockGenerator.write(self)
 
-        data = yaml.dump(self._build_block_n_from_flow_graph_io())
+        data = yaml.dump(self._build_block_n_from_flow_graph_io(), indent=4)
 
         replace = [
             ('parameters:', '\nparameters:'),
