@@ -51,7 +51,6 @@ outputs:
     dtype: complex
     vlen: ${num_taps_fwd+num_taps_rev}
     optional: true
-    optional: true
 -   label: state
     domain: stream
     dtype: short

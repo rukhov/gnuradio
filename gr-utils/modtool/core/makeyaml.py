@@ -312,11 +312,11 @@ def yaml_generator(self, **kwargs):
         data['outputs'] = output_signature
 
     param_ = ', '.join(params_list)
-    _cpp_templates = [('includes', '#include <gnuradio/{block}/{self.filename}>'),
-                      ('declarations', '{block}::{ header}::sptr ${{id}}'),
-                      ('make',
-                       'this->${{id}} = {block}::{ header}::make({param_})')
-                      ]
+    _cpp_templates = [
+        ('includes', f'#include <gnuradio/{block}/{self.filename}>'),
+        ('declarations', f'{block}::{header}::sptr ${{id}}'),
+        ('make', f'this->${{id}} = {block}::{header}::make({param_})')
+    ]
 
     if self.parsed_data['methods']:
         list_callbacks = []
@@ -332,7 +332,7 @@ def yaml_generator(self, **kwargs):
         callbacks = (callback_key, tuple(list_callbacks))
         _cpp_templates.append(callbacks)
 
-    link = ('link', 'gnuradio-{block}')
+    link = ('link', f'gnuradio-{block}')
     _cpp_templates.append(link)
     _cpp_templates = tuple(_cpp_templates)
 

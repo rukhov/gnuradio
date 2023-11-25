@@ -101,7 +101,7 @@ class BlockHeaderParser(BlockTool):
             include_paths=self.include_paths,
             compiler='gcc',
             define_symbols=['BOOST_ATOMIC_DETAIL_EXTRA_BACKEND_GENERIC'],
-            cflags='-std=c++11')
+            cflags='-std=c++17')
         decls = parser.parse(
             [self.target_file], xml_generator_config)
         global_namespace = declarations.get_global_namespace(decls)

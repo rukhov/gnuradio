@@ -21,16 +21,20 @@ class GRCYAMLGenerator(object):
     def __init__(self, modname=None, blockname=None, doc=None, params=None, iosig=None):
         """docstring for __init__"""
         params_list = [
-            '${' + s['key'] + '}' for s in params if s['in_constructor']]
+            '${' + s['key'] + '}' 
+            for s in params if s['in_constructor']
+        ]
         # Can't make a dict 'cause order matters
         str_ = ', '.join(params_list)
-        self._header = (('id', f'{modname}_{blockname}'),
-                        ('label', blockname.replace('_', ' ')),
-                        (f'category', f'[{modname.capitalize()}]')
-                        )
-        self._templates = (('imports', f'from gnuradio import {modname}'),
-                           ('make', f'{modname}.{blockname}({str_})')
-                           )
+        self._header = (
+            ('id', f'{modname}_{blockname}'),
+            ('label', blockname.replace('_', ' ')),
+            ('category', f'[{modname.capitalize()}]')
+        )
+        self._templates = (
+            ('imports', f'from gnuradio import {modname}'),
+            ('make', f'{modname}.{blockname}({str_})')
+        )
         self.params = params
         self.iosig = iosig
         self.doc = doc

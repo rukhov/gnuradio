@@ -158,7 +158,7 @@ def convert_param_xml(node, convert):
     option_labels = yaml.ListFlowing(on.findtext(
         'name') for on in node.iterfind('option'))
     param['options'] = options or no_value
-    if not all(str(o).title() == l for o, l in zip(options, option_labels)):
+    if not all(str(o).title() == ol for o, ol in zip(options, option_labels)):
         param['option_labels'] = option_labels
 
     attributes = defaultdict(yaml.ListFlowing)
