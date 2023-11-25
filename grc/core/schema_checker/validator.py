@@ -6,9 +6,182 @@
 
 
 from .utils import Message, Spec
+import re
+
+
+class ValidationError(Exception):
+    pass
 
 
 class Validator(object):
+    def __call__(self, data):
+        self.validate(data)
+
+
+class Bool(Validator):
+    def validate(self, data):
+        assert isinstance(data, bool)
+
+
+class Int(Validator):
+    def validate(self, data):
+        assert isinstance(data, int)
+
+
+class Float(Validator):
+    def validate(self, data):
+        assert isinstance(data, float)
+
+
+class Str(Validator):
+    def __init__(self, regex: str=None):
+        self._regex = regex
+        if regex is not None:
+            if not regex.endswith(r'$'):
+                regex += r'$'
+            self._fullmatch = re.compile(regex).match
+
+    def validate(self, data):
+        assert isinstance(self, str)
+        if self._regex is None:
+            return
+        if self._fullmatch(data) is None:
+            raise ValidationError(
+                f"'{data}' does not match r'{self._regex}'"
+            )
+
+
+class Option(Validator):
+    def __init__(self, validator: Validator=None):
+        assert validator is None or isinstance(validator, Validator)
+        self._inner = validator
+    
+    def validate(self, data):
+        if data is not None:
+            self._inner.validate(data)
+
+
+class Dict(Validator, dict):
+    def __init__(self, map, **kwargs):
+        dict.__init__(self, map, **kwargs)
+
+        for v in self.values():
+            assert isinstance(v, Validator)
+    
+    def validate(self, data):
+        assert isinstance(data, dict)
+
+        errors = []
+        for k, v in self.entries():
+            try:
+                v.validate(data[k])
+            except KeyError:
+                if not isinstance(v, Option):
+                    errors.append(ValidationError(
+                        f"Required key '{k}' not found in {data}"
+                    ))
+            except ValidationError as e:
+                errors.append(e)
+        
+        if len(errors) > 0:
+            raise ValidationError(errors)
+
+
+class Mapping(Validator):
+    def __init__(self, key_validator: Validator=Str(), 
+                 value_validator: Validator=None):
+        assert isinstance(key_validator, Validator)
+        assert isinstance(value_validator, (Validator, type(None)))
+        self._key_validator = key_validator
+        self._value_validator = value_validator
+
+    def validate(self, data):
+        assert isinstance(data, dict)
+
+        errors = []
+        for k, v in data:
+            try:
+                self._key_validator.validate(k)
+                self._value_validator.validate(v)
+            except ValidationError as e:
+                errors.append(e)
+        
+        if len(errors) > 0:
+            raise ValidationError(errors)
+
+
+class FixedSeq(Validator, list):
+    def __init__(self, iterable):
+        list.__init__(iterable)
+
+        for v in self:
+            assert isinstance(v, Validator)
+
+    def validate(self, data):
+        assert isinstance(data, list)
+
+        errors = []
+        for v, d in zip(self, data):
+            try:
+                v.validate(d)
+            except ValidationError as e:
+                errors.append(e)
+        
+        if len(errors) > 0:
+            raise ValidationError(errors)
+
+
+class Seq(Validator):
+    def __init__(self, item_validator: Validator=None, len_min=0, len_max=float('inf')):
+        assert item_validator is None or isinstance(item_validator, Validator)
+        self._item_validator = item_validator
+        self._len_min = len_min
+        self._len_max = len_max
+
+    def validate(self, data):
+        assert isinstance(data, list)
+        assert len(data) >= self._len_min
+        assert len(data) <= self._len_max
+        if self._item_validator is None:
+            return
+
+        errors = []
+        for d in data:
+            try:
+                self._item_validator.validate(d)
+            except ValidationError as e:
+                errors.append(e)
+
+        if len(errors) > 0:
+            raise ValidationError(errors)
+
+
+class OrValidator(Validator, list):
+    def __init__(self, *validators):
+        assert len(validators) > 1
+
+        self._validators = []
+        for v in validators:
+            assert isinstance(v, Validator)
+            if isinstance(v, OrValidator):
+                self._validators.extend(v._validators)
+            else:
+                self._validators.append(v)
+        
+    def validate(self, data):
+        for v in self._validators:
+            try:
+                v.validate(data)
+                return
+            except ValidationError:
+                pass
+        
+        raise ValidationError('No matching validator '
+                              f'for {data} in {self._validators}')
+
+
+
+class Validator_old(object):
 
     def __init__(self, scheme=None):
         self._path = []
