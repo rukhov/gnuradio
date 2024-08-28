@@ -8,14 +8,14 @@
 ########################################################################
 # Setup dependencies
 ########################################################################
-find_package(SDL)
+find_package(SDL2)
 
 ########################################################################
 # Register component
 ########################################################################
 include(GrComponent)
 GR_REGISTER_COMPONENT("gr-video-sdl" ENABLE_GR_VIDEO_SDL
-    SDL_FOUND
+    SDL2_FOUND
     ENABLE_GNURADIO_RUNTIME
 )
 

@@ -12,7 +12,7 @@
 #define INCLUDED_VIDEO_SDL_SINK_S_IMPL_H
 
 #include <gnuradio/video_sdl/sink_s.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 namespace gr {
 namespace video_sdl {
@@ -29,7 +29,7 @@ class sink_s_impl : public sink_s
 {
 private:
     int d_chunk_size;
-    thread::thread d_render_thread;
+    SDL_Thread* d_render_thread;
 
 protected:
     float d_framerate;
@@ -52,7 +52,7 @@ protected:
     std::vector<unsigned char> d_buf_y, d_buf_u, d_buf_v;
 
     std::atomic_bool d_frame_pending;
-    SDL_Overlay* d_image;
+    SDL_Texture* d_image;
 
 public:
     sink_s_impl(double framerate, int width, int height, int dst_width, int dst_height);

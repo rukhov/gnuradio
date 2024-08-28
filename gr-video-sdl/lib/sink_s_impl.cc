@@ -39,7 +39,7 @@ sink_s_impl::sink_s_impl(
                  io_signature::make(1, 3, sizeof(short)),
                  io_signature::make(0, 0, 0)),
       d_chunk_size(width * height),
-      d_render_thread(&render_loop_s, this),
+      d_render_thread(NULL),
       d_framerate(framerate),
       d_wanted_frametime_ms(0),
       d_width(width),
@@ -71,13 +71,16 @@ sink_s_impl::sink_s_impl(
     d_chunk_size = d_chunk_size * width;
     // d_chunk_size = (int) (width);
     set_output_multiple(d_chunk_size);
+
+    d_render_thread =
+        SDL_CreateThread(&render_loop_s, "video_sdl::sink_s::render_loop", this);
 }
 
 sink_s_impl::~sink_s_impl()
 {
     SDL_Event quit_event{ SDL_QUIT };
     SDL_PushEvent(&quit_event);
-    d_render_thread.detach();
+    SDL_DetachThread(d_render_thread);
 }
 
 template <typename F>
@@ -110,21 +113,16 @@ int sink_s_impl::copy_planes_to_buffers(F copy_func,
             dst_v = d_buf_v.data();
 
             if (d_image && !d_frame_pending.load()) {
-                if (SDL_LockYUVOverlay(d_image) < 0) {
+                if (SDL_UpdateYUVTexture(d_image,
+                                         NULL,
+                                         d_buf_y.data(),
+                                         d_width,
+                                         d_buf_u.data(),
+                                         d_width,
+                                         d_buf_v.data(),
+                                         d_width) < 0) {
                     continue;
                 }
-                for (int i = 0; i < d_height; i++) {
-                    memcpy(&d_image->pixels[0][i * d_image->pitches[0]],
-                           &dst_y[i * d_width],
-                           d_width);
-                    memcpy(&d_image->pixels[1][i * d_image->pitches[1]],
-                           &dst_u[i * d_width / 2],
-                           d_width / 2);
-                    memcpy(&d_image->pixels[2][i * d_image->pitches[2]],
-                           &dst_v[i * d_width / 2],
-                           d_width / 2);
-                }
-                SDL_UnlockYUVOverlay(d_image);
                 d_frame_pending.store(true);
             }
 
@@ -245,28 +243,38 @@ int render_loop_s(void* data)
         throw std::runtime_error("video_sdl2::sink_s::render_loop");
     }
 
-    /* accept any depth */
-    auto display = SDL_SetVideoMode(sink->d_dst_width,
-                                    sink->d_dst_height,
-                                    0,
-                                    SDL_SWSURFACE | SDL_RESIZABLE | SDL_ANYFORMAT);
-    // SDL_DOUBLEBUF |SDL_SWSURFACE| SDL_HWSURFACE||SDL_FULLSCREEN
-    if (!display) {
-        sink->d_logger->error("Unable to set SDL video mode: {:s}", SDL_GetError());
+    auto window =
+        SDL_CreateWindow("GNU Radio + SDL",
+                         SDL_WINDOWPOS_UNDEFINED,
+                         SDL_WINDOWPOS_UNDEFINED,
+                         sink->d_dst_width,
+                         sink->d_dst_height,
+                         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
+    if (!window) {
+        sink->d_logger->error("Couldn't create SDL window: {:s}", SDL_GetError());
+        throw std::runtime_error("video_sdl2::sink_s::render_loop");
+    }
+
+    auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    if (!renderer) {
+        sink->d_logger->error("Couldn't create SDL renderer: {:s}", SDL_GetError());
         throw std::runtime_error("video_sdl2::sink_s::render_loop");
     }
 
     if (sink->d_image) {
-        SDL_FreeYUVOverlay(sink->d_image);
+        SDL_DestroyTexture(sink->d_image);
     }
-    sink->d_image =
-        SDL_CreateYUVOverlay(sink->d_width, sink->d_height, SDL_IYUV_OVERLAY, display);
+    sink->d_image = SDL_CreateTexture(renderer,
+                                      SDL_PIXELFORMAT_IYUV,
+                                      SDL_TEXTUREACCESS_STREAMING,
+                                      sink->d_dst_width,
+                                      sink->d_dst_height);
     if (!sink->d_image) {
-        sink->d_logger->error("Couldn't create a YUV overlay: {:s}", SDL_GetError());
+        sink->d_logger->error("Couldn't create a YUV texture: {:s}", SDL_GetError());
         throw std::runtime_error("video_sdl2::sink_s::render_loop");
     }
 
-    SDL_Rect dstrect{ 0, 0, (Uint16)sink->d_dst_width, (Uint16)sink->d_dst_height };
+    SDL_Rect dstrect{ 0, 0, sink->d_dst_width, sink->d_dst_height };
 
     while (!SDL_QuitRequested()) {
         if (sink->d_wanted_ticks == 0)
@@ -277,13 +285,15 @@ int render_loop_s(void* data)
 
         if (!sink->d_frame_pending.load())
             continue;
-        SDL_DisplayYUVOverlay(sink->d_image, &dstrect);
+        SDL_RenderCopy(renderer, sink->d_image, NULL, &dstrect);
+        SDL_RenderPresent(renderer);
         sink->d_frame_pending.store(false);
     }
 
     sink->d_quit_requested = true;
-    SDL_FreeYUVOverlay(sink->d_image);
-    SDL_FreeSurface(display);
+    SDL_DestroyTexture(sink->d_image);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
     return 0;
 }

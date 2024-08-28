@@ -13,7 +13,7 @@ add_library(gnuradio-video-sdl sink_s_impl.cc sink_uc_impl.cc)
 target_link_libraries(
     gnuradio-video-sdl
     PUBLIC gnuradio-runtime
-    PRIVATE ${SDL_LIBRARY})
+    PRIVATE SDL2::SDL2)
 
 if(ENABLE_COMMON_PCH)
     target_link_libraries(gnuradio-video-sdl PRIVATE common-precompiled-headers)
@@ -22,7 +22,8 @@ endif()
 target_include_directories(
     gnuradio-video-sdl
     PUBLIC $<INSTALL_INTERFACE:include>
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include> ${SDL_INCLUDE_DIR})
+           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+    PRIVATE ${SDL2_INCLUDE_DIR})
 
 #Add Windows DLL resource file if using MSVC
 if(MSVC)
