@@ -27,11 +27,6 @@ jobs:
             os: ubuntu
             runs_on: ['ubuntu-latest']
             DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
-          - CONFIG: osx_64_numpy1.23python3.11.____cpython
-            SHORT_CONFIG: osx_64_numpy1.23python3.11.____cpython
-            UPLOAD_PACKAGES: True
-            os: macos
-            runs_on: ['macos-13']
           - CONFIG: win_64_numpy1.23python3.11.____cpython
             SHORT_CONFIG: win_64_numpy1.23python3.11.____cpython
             UPLOAD_PACKAGES: True
