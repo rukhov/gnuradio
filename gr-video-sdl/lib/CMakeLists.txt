@@ -10,12 +10,14 @@
 ########################################################################
 add_library(gnuradio-video-sdl sink_s_impl.cc sink_uc_impl.cc)
 
+#find_package(Boost CONFIG REQUIRED COMPONENTS thread)
+
 target_link_libraries(
     gnuradio-video-sdl
     PUBLIC gnuradio-runtime
     PRIVATE ${SDL_LIBRARY})
 
-if(ENABLE_COMMON_PCH)
+if(0)
     target_link_libraries(gnuradio-video-sdl PRIVATE common-precompiled-headers)
 endif()
 
