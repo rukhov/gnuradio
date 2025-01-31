@@ -51,9 +51,9 @@ sink_s_impl::sink_s_impl(
       d_wanted_ticks(0),
       d_quit_requested(false),
       // clear the surface to black
-      d_buf_y(width * height, 0),
-      d_buf_u((width / 2) * (height / 2), 128),
-      d_buf_v((width / 2) * (height / 2), 128),
+      d_buf_y(width * height * 2, 0),
+      d_buf_u((width / 2) * (height / 2) * 2, 128),
+      d_buf_v((width / 2) * (height / 2) * 2, 128),
       d_frame_pending(false),
       d_image(NULL)
 {
@@ -77,6 +77,7 @@ sink_s_impl::~sink_s_impl()
 {
     SDL_Event quit_event{ SDL_QUIT };
     SDL_PushEvent(&quit_event);
+    //d_render_thread.join();
     d_render_thread.detach();
 }
 
