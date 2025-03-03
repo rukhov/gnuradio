@@ -51,6 +51,16 @@
       "name": "windows-dbg",
       "configurePreset": "windows-dbg",
       "configuration": "Debug"
+    },
+    {
+      "name": "linux-rel",
+      "configurePreset": "linux-rel",
+      "configuration": "Release"
+    },
+    {
+      "name": "linux-dbg",
+      "configurePreset": "linux-dbg",
+      "configuration": "Debug"
     }
   ],
   "testPresets": [
