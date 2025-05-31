@@ -132,6 +132,33 @@
         "environment": 
             [],
         "console": "externalTerminal"
-    }
+    },
+        {
+        "name": "Linux - GRC test",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "/usr/bin/python3",
+        //"args": ["-u", "${workspaceFolder}/grc_tests/oot_test.py"],
+        "args": ["-u", "/home/rukhov/projects/arena/grc/video_sdl_test.py"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/../build",
+        "environment": 
+            [
+                //{"name": "LD_LIBRARY_PATH", "value": "${workspaceFolder}build/src/gr-AnalogTV/lib"}, 
+                //{"name": "GRC_BLOCKS_PATH", "value": "${workspaceFolder}/src/gr-AnalogTV/grc"},
+                //{"name": "PYTHONPATH", "value": "${workspaceFolder}/build/src/gr-AnalogTV/test_modules"},
+                //{"name": "GST_DEBUG", "value": "2" }
+            ],
+        "externalConsole": false,
+        "setupCommands": 
+            [
+                {   // Display content in STL containers pretty
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+    },
+
     ]
 }

@@ -1,6 +1,0 @@
-{
-  "dependencies": [
-    "boost",
-    "pybind11"
-  ]
-}
