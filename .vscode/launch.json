@@ -1,0 +1,164 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // C:\Users\rukho\radioconda\python.exe C:\Users\rukho\radioconda\cwp.py C:\Users\rukho\radioconda C:\Users\rukho\radioconda\Scripts\gnuradio-companion.exe
+    "version": "0.2.0",
+    "configurations": [
+    {
+        "preLaunchTask": "CopySDL_Video_Bins",
+        "name": "(windows) debug GRC",
+        "type": "cppvsdbg",
+        "request": "launch",
+        "program": "C:\\Users\\rukho\\radioconda\\python.exe",
+        "args": ["-u", "C:\\usr\\projects\\GitHub\\fpv-tools\\tests\\AtvToolsTest.py"],
+        "stopAtEntry": false,
+        "cwd": "C:\\usr\\projects\\GitHub\\gnuradio-sdl-video-mod\\build\\gr-video-sdl\\lib\\RelWithDebInfo",
+        "environment": 
+            [
+                {"name": "PATH", "value": "C:\\Users\\rukho\\radioconda;C:\\Users\\rukho\\radioconda\\Library\\mingw-w64\\bin;C:\\Users\\rukho\\radioconda\\Library\\usr\\bin;C:\\Users\\rukho\\radioconda\\Library\\bin;C:\\Users\\rukho\\radioconda\\Scripts;$(PATH)"}, 
+                {"name": "GRC_BLOCKS_PATH", "value": "C:\\usr\\projects\\GitHub\\fpv-tools\\install\\share\\gnuradio\\grc\\blocks;$(GRC_BLOCKS_PATH)"},
+                {"name": "PYTHONPATH", "value": "$(PYTHONPATH);C:\\usr\\projects\\GitHub\\fpv-tools\\install\\lib\\site-packages"}
+            ],
+        "console": "externalTerminal",
+        "symbolOptions": {
+            "searchPaths": [
+            ],
+            "searchMicrosoftSymbolServer": false,
+            "cachePath": "C:\\symbols",
+            "moduleFilter": {
+                "mode": "loadAllButExcluded",
+                "excludedModules": [ "" ]
+            }
+        }
+    },
+    {
+        "preLaunchTask": "CopyBins",
+        "name": "(windows) debug GRC test",
+        "type": "cppvsdbg",
+        "request": "launch",
+        "program": "C:/Users/rukhov/radioconda/python.exe",
+        "args": ["-u", "M:/projects/atv/tv-demod/plltest.py"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/build/lib/RelWithDebInfo",
+        "environment": 
+            [
+                {"name": "PATH", "value": "C:\\Users\\rukhov\\radioconda;C:\\Users\\rukhov\\radioconda\\Library\\mingw-w64\\bin;C:\\Users\\rukhov\\radioconda\\Library\\usr\\bin;C:\\Users\\rukhov\\radioconda\\Library\\bin;C:\\Users\\rukhov\\radioconda\\Scripts;$(PATH)"}, 
+                {"name": "GRC_BLOCKS_PATH", "value": "$(GRC_BLOCKS_PATH);${workspaceFolder}\\grc"},
+                {"name": "PYTHONPATH", "value": "$(PYTHONPATH);${workspaceFolder}\\..\\install\\lib\\site-packages"}
+            ],
+        "console": "externalTerminal"
+    },
+    {
+        "name": "(windows) debug integration tests",
+        "type": "cppvsdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/../build/src/itest/RelWithDebInfo/atv-tools_integration_tests.exe",
+        "args": [""],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/../build/src/itest/RelWithDebInfo",
+        "environment": 
+            [],
+        "console": "externalTerminal"
+    },
+    {
+        "name": "(windows) debug ",
+        "type": "cppvsdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/../build/src/utest/RelWithDebInfo/atv-tools_unit_tests.exe",
+        "args": [""],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/../build/src/utest/RelWithDebInfo",
+        "environment": 
+            [],
+        "console": "externalTerminal"
+    },
+    {
+        "name": "(windows) debug atv-tools-cli - to RAW",
+        "type": "cppvsdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/../build/src/atv-tools-cli/RelWithDebInfo/atv-tools-cli.exe",
+        "args": [
+            "--input-type", "auto",
+            "--output-type", "raw",
+            "--input-file", "C:\\!share\\share\\tmp\\PAL\\2023-SMPTE-WSS-Squeeze-CXADC-CX-Blue-8bit.cvbs",
+            "--out-cvbs-raw-file", "${workspaceFolder}/../tests/2023-SMPTE-WSS-Squeeze-CXADC-CX-Blue-8bit.raw",
+            "--sample-rate", "28636364",
+            "--amplification", "1.8",
+            "--dc-correction", "0.24"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/../build/src/atv-tools-cli/Debug",
+        "environment": 
+            [],
+        "console": "externalTerminal"
+    },
+    
+    {
+        "name": "(windows) debug atv-tools-cli - from flac-CVBS",
+        "type": "cppvsdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/../build/src/atv-tools-cli/RelWithDebInfo/atv-tools-cli.exe",
+        "args": [
+            "--input-type", "auto",
+            "--output-type", "avi",
+            "--input-file", "C:\\!share\\share\\tmp\\PAL\\2023-SMPTE-WSS-Squeeze-CXADC-CX-Blue-8bit.cvbs",
+            "--output-file", "${workspaceFolder}/../tests/2023-SMPTE-WSS-Squeeze-CXADC-CX-Blue-8bit.avi",
+            "--sample-rate", "28636364",
+            "--amplification", "1.8",
+            "--dc-correction", "0.24",
+            "--max-frames", "10"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/../build/src/atv-tools-cli/Debug",
+        "environment": 
+            [],
+        "console": "externalTerminal"
+    },
+    
+    {
+        "name": "(windows) debug atv-tools-cli - from RAW",
+        "type": "cppvsdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/../build/src/atv-tools-cli/RelWithDebInfo/atv-tools-cli.exe",
+        "args": [
+            "--input-type", "raw",
+            "--input-file", "${workspaceFolder}/../tests/2023-SMPTE-WSS-Squeeze-CXADC-CX-Blue-8bit.raw",
+            "--output-file", "${workspaceFolder}/../tests/2023-SMPTE-WSS-Squeeze-CXADC-CX-Blue-8bit.avi",
+            "--sample-rate", "35468950",
+            "--amplification", "1.",
+            "--dc-correction", "0.",
+            "--max-frames", "2"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/../build/src/atv-tools-cli/Debug",
+        "environment": 
+            [],
+        "console": "externalTerminal"
+    },
+        {
+        "name": "Linux - GRC test",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "/usr/bin/python3",
+        //"args": ["-u", "${workspaceFolder}/grc_tests/oot_test.py"],
+        "args": ["-u", "/home/rukhov/projects/arena/grc/video_sdl_test.py"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/../build",
+        "environment": 
+            [
+                //{"name": "LD_LIBRARY_PATH", "value": "${workspaceFolder}build/src/gr-AnalogTV/lib"}, 
+                //{"name": "GRC_BLOCKS_PATH", "value": "${workspaceFolder}/src/gr-AnalogTV/grc"},
+                //{"name": "PYTHONPATH", "value": "${workspaceFolder}/build/src/gr-AnalogTV/test_modules"},
+                //{"name": "GST_DEBUG", "value": "2" }
+            ],
+        "externalConsole": false,
+        "setupCommands": 
+            [
+                {   // Display content in STL containers pretty
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+    },
+
+    ]
+}
